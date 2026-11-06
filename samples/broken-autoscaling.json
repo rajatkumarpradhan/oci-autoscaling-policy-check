@@ -1,0 +1,56 @@
+{
+  "autoscaling_configs": [
+    {
+      "name": "web-pool-scaler",
+      "resource": {"type": "instancePool", "id": "ocid1.instancepool.example.web"},
+      "auto_scaling_policies": [
+        {
+          "name": "weekday-scale",
+          "policy_type": "threshold",
+          "is_enabled": true,
+          "capacity": {"initial": 8, "min": 1, "max": 4},
+          "rules": [
+            {
+              "name": "scale-out-cpu",
+              "action": {"type": "CHANGE_COUNT_BY", "value": 2},
+              "metric": {"metric_type": "CPU_UTILIZATION", "threshold": {"operator": "GT", "value": 110}},
+              "cooldown_seconds": 300
+            },
+            {
+              "name": "scale-in-cpu",
+              "action": {"type": "CHANGE_COUNT_BY", "value": -1},
+              "metric": {"metric_type": "CPU_UTILIZATION", "threshold": {"operator": "LT", "value": 20}},
+              "cooldown_seconds": 30
+            }
+          ]
+        },
+        {
+          "name": "nightly-baseline",
+          "policy_type": "scheduled",
+          "is_enabled": true,
+          "capacity": {"initial": 2, "min": 2, "max": 6},
+          "execution_schedule": {"type": "cron", "expression": "0 22 * *"}
+        }
+      ]
+    },
+    {
+      "name": "batch-pool-scaler",
+      "resource": {"type": "instancePool", "id": "ocid1.instancepool.example.batch"},
+      "auto_scaling_policies": [
+        {
+          "name": "queue-depth",
+          "policy_type": "threshold",
+          "is_enabled": false,
+          "capacity": {"initial": 2, "min": 0, "max": 10},
+          "rules": [
+            {
+              "name": "grow",
+              "action": {"type": "CHANGE_COUNT_BY", "value": 3},
+              "metric": {"metric_type": "QUEUE_DEPTH", "threshold": {"operator": "GT", "value": 500}}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
