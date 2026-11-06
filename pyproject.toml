@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oci-autoscaling-policy-check"
+version = "0.1.0"
+description = "Offline auditor for simplified OCI autoscaling configuration exports"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+oci-autoscaling-policy-check = "oci_autoscaling_policy_check.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
